@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Rebola Pro Fuzil</title>
+    <link rel="icon" type="image/png" href="rebola.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            transition: background 0.2s, color 0.2s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode {
+            background-color: #f5f5f5;
+            color: #111;
+        }
+
+        .header {
+            background: #fe0000;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 48px;
+            width: auto;
+            border-radius: 30px;
+            background: #000;
+            padding: 4px;
+        }
+
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #000;
+            text-shadow: 0 1px 0 #fff3;
+        }
+
+        .hamburger {
+            background: transparent;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px 6px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .hamburger:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: #000;
+            border-radius: 4px;
+            transition: 0.25s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .nav-overlay.open {
+            display: block;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            max-width: 80%;
+            height: 100%;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 28px 20px;
+            transition: right 0.3s ease;
+            z-index: 300;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        body.light-mode .side-menu {
+            background: #f0f0f0;
+            color: #111;
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .side-menu .close-btn {
+            align-self: flex-end;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #fe0000;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+        }
+
+        .side-menu a {
+            display: block;
+            padding: 12px 10px;
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: background 0.15s;
+            font-size: 1.05rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        body.light-mode .side-menu a {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .side-menu a:hover {
+            background: #fe0000;
+            color: #000;
+        }
+
+        .section {
+            display: none;
+            padding: 24px 18px 40px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-left: 6px solid #fe0000;
+            padding-left: 16px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 24px;
+            padding: 20px 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        body.light-mode .card {
+            background: #fff;
+            border-color: #ddd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fe0000;
+        }
+
+        .btn {
+            background: #fe0000;
+            color: #000;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #cc0000;
+            transform: scale(0.97);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #fe0000;
+            color: #fe0000;
+        }
+
+        .btn-outline:hover {
+            background: #fe0000;
+            color: #000;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 60px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        body.light-mode input,
+        body.light-mode textarea,
+        body.light-mode select {
+            background: #fff;
+            border-color: #bbb;
+            color: #111;
+        }
+
+        textarea {
+            border-radius: 24px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .config-group {
+            margin-bottom: 28px;
+        }
+        .config-group h4 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #fe0000;
+        }
+        .config-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        body.light-mode .config-item {
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .config-item label {
+            font-weight: 500;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: #444;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle-switch.active {
+            background: #fe0000;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .toggle-switch.active::after {
+            left: 25px;
+        }
+
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+        }
+        body.light-mode .game-item {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .trophy {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+        .trophy span {
+            background: #222;
+            padding: 6px 16px;
+            border-radius: 40px;
+            border-left: 3px solid #fe0000;
+        }
+        body.light-mode .trophy span {
+            background: #e0e0e0;
+        }
+
+        .payment-option {
+            display: flex;
+            gap: 16px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .payment-option button {
+            flex: 1;
+            min-width: 120px;
+        }
+        .recorder {
+            background: #111;
+            padding: 20px;
+            border-radius: 30px;
+            text-align: center;
+            margin: 16px 0;
+        }
+        body.light-mode .recorder {
+            background: #eaeaea;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .secret-section {
+            text-align: center;
+            padding: 40px 10px;
+        }
+        .vaga-select {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .vaga-select button {
+            background: #222;
+            color: #fff;
+            border: 2px solid #fe0000;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .vaga-select button:hover {
+            background: #fe0000;
+            color: #000;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding: 20px 18px 30px;
+            text-align: center;
+            border-top: 1px solid #222;
+            background: #0a0a0a;
+        }
+
+        body.light-mode .footer {
+            background: #eee;
+            border-color: #ccc;
+        }
+
+        .footer input {
+            max-width: 400px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 400;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        #modalOverlay .modal-box {
+            background: #1a1a1a;
+            max-width: 700px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 30px;
+            padding: 28px;
+            color: #fff;
+            position: relative;
+        }
+
+        body.light-mode #modalOverlay .modal-box {
+            background: #f0f0f0;
+            color: #111;
+        }
+
+        #modalOverlay .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #fe0000;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+        }
+
+        #modalOverlay .modal-content {
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-top: 10px;
+        }
+
+        #modalOverlay .modal-content .ter-vaga-link {
+            color: #fe0000;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .site-title {
+                font-size: 1.0rem;
+            }
+            .logo-img {
+                height: 40px;
+            }
+            .side-menu {
+                width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-area">
+            <img src="rebola1.png" alt="Rebola Pro Fuzil" class="logo-img">
+            <span class="site-title">REBOLA PRO FUZIL</span>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+    <nav class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeMenuBtn">&times;</button>
+        <a href="#" data-section="noticias">📰 Notícias</a>
+        <a href="#" data-section="tabela">📅 Tabela de jogos</a>
+        <a href="#" data-section="vencimentos">🏆 Vencimentos</a>
+        <a href="#" data-section="ingressos">🎟️ Ingressos</a>
+        <a href="#" data-section="login">🔐 Login</a>
+        <a href="#" data-section="configuracoes">⚙️ Configurações</a>
+        <a href="#" data-section="contato">📧 Contate-nos</a>
+    </nav>
+
+    <main>
+        <section id="noticias" class="section active">
+            <h2>📰 Notícias</h2>
+            <div class="card">
+                <h3>Yan perde pênalti, mas time vence</h3>
+                <p>Em jogo emocionante, o Rebola Pro Fuzil venceu por 3x2. Yan perdeu um pênalti, mas fez dois gols e deu assistência. Torcida gritou "Corinthians" por 30 segundos.</p>
+            </div>
+            <div class="card">
+                <h3>Nova coxinha no cardápio</h3>
+                <p>A tia da cantina lançou a coxinha de frango com catupiry. Jogadores aprovam.</p>
+            </div>
+            <div class="card">
+                <h3>Inscrições abertas para peneira</h3>
+                <p>Vagas para zagueiro, goleiro, atacante e treinador. Salário: coxinha e coca. <span class="secret-link" onclick="navigateTo('login')">Saiba mais</span></p>
+            </div>
+        </section>
+
+        <section id="tabela" class="section">
+            <h2>📅 Tabela de jogos</h2>
+            <div class="game-item"><span>⚽ Rebola x Vasco</span><span>12/09 15:00</span></div>
+            <div class="game-item"><span>⚽ Rebola x Flamengo</span><span>19/09 16:30</span></div>
+            <div class="game-item"><span>⚽ Rebola x Palmeiras</span><span>26/09 14:00</span></div>
+            <div class="game-item"><span>⚽ Rebola x Corinthians</span><span>03/10 17:00</span></div>
+        </section>
+
+        <section id="vencimentos" class="section">
+            <h2>🏆 Vencimentos</h2>
+            <div class="card">
+                <h3>Títulos históricos</h3>
+                <div class="trophy">
+                    <span>🏆 2026 - Copa Inaugural</span>
+                    <span>🏆 2026 - Torneio Relâmpago</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Vice-campeonatos</h3>
+                <div class="trophy">
+                    <span>🥈 2026 - Copa dos Amigos</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="ingressos" class="section">
+            <h2>🎟️ Compra de ingressos</h2>
+            <div class="card">
+                <h3>Escolha o pagamento</h3>
+                <div class="payment-option">
+                    <button class="btn" onclick="selectPayment('corinthians')">📢 Gritar Corinthians (20s)</button>
+                    <button class="btn" onclick="selectPayment('balinha')">🍬 Balinha</button>
+                </div>
+                <div id="paymentArea" class="hidden">
+                    <div id="corinthiansArea" class="hidden recorder">
+                        <p>Grave áudio gritando "CORINTHIANS" por 20s</p>
+                        <button class="btn" id="startRecordBtn">🎙️ Iniciar gravação</button>
+                        <button class="btn hidden" id="stopRecordBtn">⏹️ Parar</button>
+                        <p id="recordStatus">⏳ Aguardando...</p>
+                        <button class="btn hidden" id="confirmCorinthians">✅ Confirmar pagamento (Corinthians)</button>
+                    </div>
+                    <div id="balinhaArea" class="hidden">
+                        <select id="balinhaSelect">
+                            <option>Balinha de morango</option>
+                            <option>Balinha de menta</option>
+                            <option>Balinha de café</option>
+                            <option>Balinha de tutti-frutti</option>
+                        </select>
+                        <button class="btn" id="confirmBalinha">✅ Confirmar balinha</button>
+                    </div>
+                </div>
+                <div id="paymentResult" class="card" style="margin-top:16px;"></div>
+            </div>
+        </section>
+
+        <section id="login" class="section">
+            <h2>🔐 Login / Cadastro</h2>
+            <div class="card">
+                <input type="email" id="loginEmail" placeholder="Seu e-mail">
+                <input type="password" id="loginPassword" placeholder="Senha (mínimo 6)">
+                <button class="btn" id="loginBtn">Entrar</button>
+                <button class="btn btn-outline" id="registerBtn">Criar conta</button>
+                <p id="loginMessage" style="margin-top:12px;color:#fe0000;"></p>
+            </div>
+        </section>
+
+        <section id="configuracoes" class="section">
+            <h2>⚙️ Configurações</h2>
+            <div class="config-group">
+                <h4>1. Geral</h4>
+                <div class="config-item"><label>Modo escuro</label><div class="toggle-switch active" id="darkToggle"></div></div>
+                <div class="config-item"><label>Suporte</label><button class="btn btn-outline" onclick="navigateTo('contato')">Abrir</button></div>
+                <div class="config-item"><label>Contate-nos</label><button class="btn btn-outline" onclick="navigateTo('contato')">Ir</button></div>
+            </div>
+            <div class="config-group">
+                <h4>2. Termos</h4>
+                <div class="config-item"><label>Termos e condições</label><button class="btn btn-outline" onclick="showModal(termsText)">Ver</button></div>
+                <div class="config-item"><label>Políticas de privacidade</label><button class="btn btn-outline" onclick="showModal(privacyText)">Ver</button></div>
+                <div class="config-item"><label>Políticas de compra</label><button class="btn btn-outline" onclick="showModal(purchasePolicyText)">Ver</button></div>
+                <div class="config-item"><label>Sobre Nós</label><button class="btn btn-outline" onclick="showModal(sobreText)">Ver</button></div>
+                <div class="config-item" id="regrasTimeItem"><label>Regras do time</label><button class="btn btn-outline" id="regrasTimeBtn">Ver</button></div>
+            </div>
+            <div class="config-group">
+                <h4>3. História</h4>
+                <div class="config-item"><label>História completa</label><button class="btn btn-outline" onclick="showModal(historiaText)">Ver</button></div>
+            </div>
+        </section>
+
+        <section id="contato" class="section">
+            <h2>📧 Contate-nos / Suporte</h2>
+            <div class="card">
+                <input type="text" id="contactTitle" placeholder="Título">
+                <input type="text" id="contactName" placeholder="Seu nome ou e-mail">
+                <textarea id="contactMessage" placeholder="Mensagem"></textarea>
+                <button class="btn" id="sendContactBtn">Enviar mensagem</button>
+                <p id="contactFeedback" style="margin-top:12px;"></p>
+            </div>
+        </section>
+
+        <section id="trabalhe" class="section">
+            <h2>🤫 Área secreta</h2>
+            <div id="secretStep1" class="secret-section">
+                <h3>Quer trabalhar no time?</h3>
+                <button class="btn" id="queroBtn">Quero.</button>
+            </div>
+            <div id="secretStep2" class="secret-section hidden">
+                <h3>Etapa 1: Escolha sua vaga</h3>
+                <div class="vaga-select">
+                    <button data-vaga="Zagueiro">Zagueiro</button>
+                    <button data-vaga="Goleiro">Goleiro</button>
+                    <button data-vaga="Atacante">Atacante</button>
+                    <button data-vaga="Treinador">Treinador</button>
+                </div>
+            </div>
+            <div id="secretStep3" class="secret-section hidden">
+                <h3>Etapa 2: Peneira</h3>
+                <p>Preencha o formulário do Google:</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfW2DLnEKzfjIbhccmnIWfNr0tde6-DmVuqldRqYse6nIhfsA/viewform?usp=publish-editor" target="_blank" class="btn">Abrir peneira</a>
+                <br><br>
+                <button class="btn" id="peneiraOkBtn">✅ Já preenchi, ir para contrato</button>
+            </div>
+            <div id="secretStep4" class="secret-section hidden">
+                <h3>Etapa 3: Contrato</h3>
+                <p id="contratoTexto">Contrato será assinado fisicamente. Você receberá uma coxinha e uma coca por jogo.</p>
+                <button class="btn" id="assinarContratoBtn">✍️ Assinar contrato (enviar e-mail)</button>
+                <p id="contratoFeedback"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p style="font-weight:300;margin-bottom:4px;">Inscreva-se para receber notícias</p>
+        <input type="email" placeholder="Seu e-mail" id="newsletterEmail">
+        <button class="btn" id="newsletterBtn">Inscrever</button>
+        <p style="font-size:0.8rem;margin-top:14px;">Rebola Pro Fuzil © 2026 - time do Yan</p>
+    </footer>
+
+    <div id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== TEXTOS COMPLETOS ==========
+        const termsText =
+            `TERMOS E CONDIÇÕES DO REBOLA PRO FUZIL
+
+        (Válidos apenas enquanto o juiz não olhar)
+
+        ---
+
+        1. ACEITAÇÃO DOS TERMOS
+
+        Ao acessar o site do Rebola Pro Fuzil, você automaticamente concorda que:
+
+        · O Yan é o melhor amigo do dono do site (mesmo que ele não saiba disso ainda).
+        · Nada aqui será levado a sério — nem por um juiz, nem por um advogado, nem pela sua tia do zap.
+
+        Se você não concordar, pode fechar a aba e ir assistir outro time (mas vai perder a chance de ganhar uma coxinha).
+
+        ---
+
+        2. CADASTRO DE JOGADORES
+
+        Para se tornar um atleta do Rebola Pro Fuzil, você deve fornecer:
+
+        · Nome completo (pra gente saber quem vai levar a culpa);
+        · Endereço completo (pra entregar a coxinha);
+        · CEP (pra garantir que a coxinha chegue quente).
+
+        Atenção: Seu salário será uma coxinha e uma Coca-Cola por jogo.
+
+        · A coxinha pode ou não ter catupiry (sujeito à disponibilidade do dia).
+        · A Coca pode ser trocada por um Dolly sem aviso prévio.
+
+        ---
+
+        3. INGRESSOS
+
+        Para comprar um ingresso, você não precisa pagar em dinheiro.
+        Basta gritar "CORINTHIANS" por no mínimo 20 segundos ininterruptos na entrada do estádio (ou na frente do computador).
+
+        · O grito será cronometrado pelo porteiro (que pode ser o Yan).
+        · Se você parar antes dos 20 segundos, será barrado e ainda vai ter que ouvir uma música do Galvão Bueno.
+
+        ---
+
+        4. DIREITOS E DEVERES DO JOGADOR
+
+        · Você tem o direito de:
+          · Reclamar do árbitro (mesmo se ele estiver certo);
+          · Pedir mais uma coxinha (não será atendido);
+          · Comemorar gol fazendo dança do pombo (desde que não machuque ninguém).
+
+        · Você tem o dever de:
+          · Não processar o Rebola Pro Fuzil por nada (nem por lesão, nem por fome, nem por vergonha alheia);
+          · Aceitar que o Yan é o craque do time, mesmo que ele erre gol debaixo da trave;
+          · Comparecer aos treinos (mesmo que os treinos sejam apenas comer coxinha e jogar conversa fora).
+
+        ---
+
+        5. POLÍTICA DE REEMBOLSO E CANCELAMENTO
+
+        Não há reembolso.
+
+        · Se você gritou "Corinthians" e o jogo foi cancelado, sinto muito — o grito já foi dado, não tem volta.
+        · Se você comeu a coxinha e o jogo acabou antes do tempo, considere isso um investimento em felicidade momentânea.
+
+        ---
+
+        6. PROPRIEDADE INTELECTUAL
+
+        O grito "Corinthians" não é de nossa propriedade (infelizmente).
+        Mas o meme do Rebola Pro Fuzil é nosso.
+        É proibido reproduzir o escudo do time sem autorização do Yan (que provavelmente vai deixar, porque ele é gente boa).
+
+        ---
+
+        7. LIMITAÇÃO DE RESPONSABILIDADE
+
+        O Rebola Pro Fuzil não se responsabiliza por:
+
+        · Coxinhas frias;
+        · Coca sem gás;
+        · Gols perdidos;
+        · Pênaltis roubados;
+        · Vergonha causada por dançar mal após um gol;
+        · Lesões causadas por tentar imitar o Neymar;
+        · Yan ser convocado para a Seleção (mas se acontecer, a gente fala "eu avisei").
+
+        ---
+
+        8. DISPOSIÇÕES FINAIS
+
+        · Este documento não tem validade jurídica — é puramente para fins de entretenimento e zoação.
+        · Se algum advogado ler isso, pedimos que ria um pouco e siga em frente.
+        · O foro eleito é a quadra da escola, onde o juiz é o professor de Educação Física (se ele estiver de bom humor).
+
+        ---
+
+        E, acima de tudo:
+        VAI REBOLA PRO FUZIL! 🦍⚽
+        (E vai Yan, mesmo que ele perca o pênalti)`;
+
+        const privacyText =
+            `POLÍTICA DE PRIVACIDADE DO REBOLA PRO FUZIL
+
+        (COM COOKIES – O YAN ESTAVA ERRADO)
+
+        ---
+
+        1. QUEM SOMOS
+
+        Rebola Pro Fuzil – time de futebol da escola, liderado pelo craque Yan.
+
+        ---
+
+        2. DADOS COLETADOS
+
+        Dos jogadores:
+
+        · Nome completo
+        · Endereço completo
+        · CEP
+
+        Dos torcedores:
+
+        · Nenhum dado pessoal, a menos que se cadastrem voluntariamente.
+
+        ---
+
+        3. COOKIES
+
+        SIM, O SITE USA COOKIES.
+
+        Cookies são pequenos arquivos salvos no seu navegador.
+
+        Usamos cookies para:
+
+        · Lembrar que você já gritou "Corinthians" hoje;
+        · Contar quantas vezes você acessou o site (pra saber se você é fã ou só curioso);
+        · Melhorar sua experiência (tipo não te perguntar 20x seu nome).
+
+        Não usamos cookies para:
+
+        · Roubar seus dados;
+        · Te vender propaganda (a gente não tem grana pra isso);
+        · Descobrir se você torce pro rival (mas a gente desconfia).
+
+        ---
+
+        4. VOCÊ PODE RECUSAR?
+
+        Sim. Basta configurar seu navegador para bloquear cookies.
+        Mas aí você vai ter que ficar digitando seu nome toda hora e o Yan vai ficar puto.
+
+        ---
+
+        5. COMO USAMOS SEUS DADOS
+
+        · Entregar coxinhas;
+        · Convocar jogadores;
+        · Mandar mensagens motivacionais (e zoar quando perde);
+        · Guardar no bloco de notas do Yan.
+
+        ---
+
+        6. COMPARTILHAMENTO
+
+        Compartilhamos com:
+
+        · Yan;
+        · Tia da cantina;
+        · Porteiro.
+
+        Compartilhamos com NINGUÉM além disso.
+
+        ---
+
+        7. SEGURANÇA
+
+        Os dados ficam no bloco de notas do Yan.
+        Se ele perder o bloco, a culpa é dele.
+
+        ---
+
+        8. SEUS DIREITOS
+
+        · Ver seus dados: fala com o Yan;
+        · Corrigir: fala com o Yan;
+        · Excluir: fala com o Yan.
+
+        (Se ele não responder, manda um bilhete.)
+
+        ---
+
+        9. VALIDADE JURÍDICA
+
+        NENHUMA. É brincadeira.
+        Se a LGPD vier atrás, a gente fala que é time de escola.
+
+        ---
+
+        10. CONTATO
+
+        Yan – na escola, na quadra ou no zap (se responder).
+
+        ---
+
+        11. COOKIES (DE NOVO)
+
+        SIM, TEM COOKIES.
+        O YAN TAVA ERRADO.
+        PEÇO DESCULPAS EM NOME DELE.
+
+        ---
+
+        Rebola Pro Fuzil – com cookies, sem vergonha e com muita coxinha. 🍪🦍`;
+
+        const purchasePolicyText =
+            `POLÍTICA DE COMPRA DE INGRESSOS DO REBOLA PRO FUZIL
+
+        (COM COMPRA ONLINE – PORQUE AGORA TEM)
+
+        ---
+
+        1. O QUE VOCÊ ESTÁ COMPRANDO
+
+        Ingresso para assistir a um jogo do Rebola Pro Fuzil – o time do Yan.
+
+        Inclui:
+
+        · Acesso à quadra;
+        · Torcida liberada;
+        · Emoção (ou frustração, depende do jogo);
+        · A chance de ver o Yan perder um gol (e rir disso depois).
+
+        Não inclui:
+
+        · Cadeira;
+        · Água;
+        · Coxinha (isso é só pra jogador, e o Yan come primeiro).
+
+        ---
+
+        2. FORMAS DE PAGAMENTO
+
+        Presencial (entrada na hora):
+
+        · Gritar "CORINTHIANS" por 20 segundos na entrada.
+
+        Online (pelo site):
+
+        · GRAVAR UM ÁUDIO gritando "CORINTHIANS" por 20 segundos;
+        · Enviar pelo formulário do site;
+        · O Yan (ou alguém que ele indicar) valida o áudio;
+        · Se aprovado, você recebe um ingresso virtual no seu e-mail.
+
+        Pagamento em dinheiro/PIX/Cartão:
+
+        · NÃO ACEITAMOS. Se tentar pagar, o Yan vai rir da sua cara.
+
+        ---
+
+        3. COMO COMPRAR ONLINE
+
+        Passo 1: Acesse o site do Rebola Pro Fuzil.
+        Passo 2: Clique em "Comprar Ingresso".
+        Passo 3: Preencha seu nome e e-mail.
+        Passo 4: Grave o áudio gritando "CORINTHIANS" por 20 segundos.
+        Passo 5: Envie o áudio.
+        Passo 6: Espere o Yan validar (ele pode demorar, porque ele joga bola e come coxinha).
+        Passo 7: Se aprovado, receba seu ingresso virtual.
+        Passo 8: Chegue na quadra, mostre o e-mail e ENTRE.
+
+        Se reprovado:
+
+        · Menos de 20 segundos? TENTE DE NOVO.
+        · Gritou "VASCO"? O Yan vai te bloquear.
+        · Gritou "PALMEIRAS"? O Yan vai processar (brincadeira, mas vai ficar puto).
+
+        ---
+
+        4. POLÍTICA DE REEMBOLSO ONLINE
+
+        Não há reembolso.
+
+        · O Yan já ouviu seu áudio e já tá te zoando no grupo do time.
+
+        Exceção:
+
+        · Se o jogo for cancelado porque o Yan faltou (motivo: coxinha demais), você pode usar seu ingresso no próximo jogo. Mas só se o Yan lembrar.
+
+        ---
+
+        5. VALIDADE DO INGRESSO ONLINE
+
+        · Válido APENAS para o jogo comprado.
+        · Não pode trocar por outro jogo.
+        · Não pode transferir.
+        · Se o Yan não jogar, o ingresso perde a graça (mas ainda vale).
+
+        ---
+
+        6. SEGURANÇA DA COMPRA ONLINE
+
+        · Seus dados ficam com o Yan (no bloco de notas dele).
+        · Seus áudios ficam num Drive que o Yan criou.
+        · Se vazar, a culpa é do Yan (e ele vai ter que pagar coxinha pra todo mundo).
+
+        ---
+
+        7. CONTATO PARA DÚVIDAS
+
+        · Fale com o Yan na quadra.
+        · Mande mensagem pro Yan no zap (se ele responder).
+        · Deixe um bilhete na mochila do Yan (se achar ela).
+
+        ---
+
+        8. DISPOSIÇÕES FINAIS
+
+        · O áudio gravado vira propriedade do Rebola Pro Fuzil (e do Yan).
+        · Podemos usar seu áudio para:
+          · Zoar você;
+          · Fazer memes;
+          · Tocar no intervalo.
+        · O Yan tem o direito de revogar seu ingresso se você chamar ele de bagre.
+
+        ---
+
+        Rebola Pro Fuzil – o time do Yan, onde o ingresso se paga com a voz.
+        VAI REBOLA PRO FUZIL! 🦍⚽`;
+
+        const sobreText =
+            `SOBRE NÓS
+
+        Rebola Pro Fuzil é um time de futebol da escola, liderado pelo craque Yan.
+
+        Fundado em 2026 por um grupo de amigos que amava futebol e coxinha, o time rapidamente se tornou uma lenda na região. Com um estilo de jogo alegre e descontraído, o Rebola Pro Fuzil conquistou diversos títulos e uma torcida apaixonada.
+
+        O Yan, nosso capitão e artilheiro, é conhecido por seus dribles desconcertantes e por perder gols impossíveis. Mas a torcida está sempre lá, apoiando e gritando "Corinthians" a plenos pulmões.
+
+        Hoje, o Rebola Pro Fuzil é mais que um time: é uma família. E toda família precisa de coxinha.`;
+
+        const regrasText =
+            `REGRAS DO TIME
+
+        1. Todos os jogadores devem chegar no horário dos treinos (atrasos serão punidos com 10 flexões).
+
+        2. É proibido chamar o Yan de bagre (a não ser que você queira correr 5 voltas na quadra).
+
+        3. O salário é uma coxinha e uma Coca-Cola por jogo. A coxinha pode ser de frango, carne ou queijo (depende do que tiver na cantina).
+
+        4. Treinos são sagrados. Faltar sem justificativa resulta em coxinha cortada por uma semana.
+
+        5. Respeite o juiz (mesmo se ele for ruim). Se não respeitar, vai ter que gritar "Corinthians" por 1 minuto inteiro.
+
+        6. É obrigatório comemorar gols com dança (qualquer dança, desde que não machuque ninguém).
+
+        7. Jogadores novos devem passar pela peneira (que é tipo um teste, mas com mais coxinha).
+
+        8. O Yan tem o direito de mudar as regras quando quiser (porque ele é o craque).
+
+        9. Torcedores podem gritar o que quiserem, desde que não seja ofensivo. Gritos de "Vasco" ou "Palmeiras" são proibidos e resultam em expulsão da quadra.
+
+        10. E por fim, assinam o contrato. Ter Vaga.`;
+
+        const historiaText =
+            `HISTÓRIA COMPLETA DO REBOLA PRO FUZIL
+
+        Capítulo 1: O Início (2026)
+
+        Tudo começou em 2026, quando um grupo de amigos da escola resolveu montar um time de futebol para jogar os campeonatos da região. O Yan, que já era conhecido por suas habilidades na quadra, foi escolhido como capitão.
+
+        A primeira partida oficial foi contra o time da vizinhança. O Rebola Pro Fuzil perdeu de 5x0, mas a torcida já estava formada. Eles gritaram "Corinthians" por tanto tempo que até o juiz ficou confuso.
+
+        Capítulo 2: A Primeira Vitória
+
+        Depois de várias derrotas humilhantes, finalmente veio a primeira vitória: 2x1 contra o time do bairro vizinho. O gol da virada foi do Yan, que comemorou com uma dança que virou meme na escola.
+
+        A partir daí, o time nunca mais parou. Treinos todos os dias, coxinha na cantina e muita raça em campo.
+
+        Capítulo 3: Os Títulos
+
+        Em 2026, o Rebola Pro Fuzil conquistou seus primeiros títulos: a Copa Inaugural e o Torneio Relâmpago. A torcida lotou a quadra e o grito de "Corinthians" ecoou por horas.
+
+        Capítulo 4: O Futuro
+
+        O time continua crescendo. Novos jogadores chegam, a torcida aumenta e a tradição se fortalece. O objetivo é claro: ser o maior time de futebol da escola (e talvez do mundo, mas isso é só um sonho).
+
+        E assim, o Rebola Pro Fuzil segue sua jornada, com coxinha, coca e muito amor pelo futebol.
+
+        VAI REBOLA PRO FUZIL! 🦍⚽`;
+
+        // ========== NAVEGAÇÃO ==========
+        function navigateTo(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+            closeMenu();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            sideMenu.classList.toggle('open');
+            overlay.classList.toggle('open');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            overlay.classList.remove('open');
+            hamburger.classList.remove('active');
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', closeMenu);
+        document.getElementById('closeMenuBtn').addEventListener('click', closeMenu);
+
+        document.querySelectorAll('.side-menu a[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo(link.dataset.section);
+            });
+        });
+
+        // ========== MODO ESCURO ==========
+        const darkToggle = document.getElementById('darkToggle');
+        darkToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.body.classList.toggle('light-mode');
+        });
+
+        // ========== LOGIN ==========
+        let isLoggedIn = false;
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginMsg = document.getElementById('loginMessage');
+
+        function fakeLogin(email) {
+            isLoggedIn = true;
+            loginMsg.innerText = '✅ Logado como ' + email;
+            loginMsg.style.color = '#0f0';
+            sendEmail('template_4n9je15', 'Login identificação', email, 'Link de identificação enviado para seu e-mail.');
+        }
+
+        loginBtn.addEventListener('click', function() {
+            const email = document.getElementById('loginEmail').value;
+            if (email && email.includes('@')) {
+                fakeLogin(email);
+            } else {
+                loginMsg.innerText = '❌ E-mail inválido';
+                loginMsg.style.color = '#fe0000';
+            }
+        });
+
+        registerBtn.addEventListener('click', function() {
+            const email = document.getElementById('loginEmail').value;
+            if (email && email.includes('@')) {
+                fakeLogin(email);
+                loginMsg.innerText = '✅ Conta criada e logado!';
+                loginMsg.style.color = '#0f0';
+            } else {
+                loginMsg.innerText = '❌ E-mail inválido para criar conta';
+                loginMsg.style.color = '#fe0000';
+            }
+        });
+
+        // ========== CONTATO ==========
+        function sendEmail(templateId, title, name, message) {
+            console.log('📧 EmailJS simulado: template=' + templateId + ', title=' + title + ', name=' + name + ', message=' +
+                message);
+            return true;
+        }
+
+        document.getElementById('sendContactBtn').addEventListener('click', function() {
+            const title = document.getElementById('contactTitle').value || 'Contato';
+            const name = document.getElementById('contactName').value || 'Anônimo';
+            const msg = document.getElementById('contactMessage').value || 'Sem mensagem';
+            const ok = sendEmail('template_4n9je15', title, name, msg);
+            document.getElementById('contactFeedback').innerText = ok ? '✅ Mensagem enviada com sucesso!' :
+            '❌ Erro ao enviar';
+        });
+
+        // ========== COMPRA DE INGRESSOS ==========
+        let selectedPayment = null;
+        let recordStartTime = 0;
+        let isRecording = false;
+
+        function selectPayment(type) {
+            selectedPayment = type;
+            document.getElementById('paymentArea').classList.remove('hidden');
+            document.getElementById('corinthiansArea').classList.add('hidden');
+            document.getElementById('balinhaArea').classList.add('hidden');
+            document.getElementById('paymentResult').innerHTML = '';
+            if (type === 'corinthians') {
+                document.getElementById('corinthiansArea').classList.remove('hidden');
+                document.getElementById('startRecordBtn').classList.remove('hidden');
+                document.getElementById('stopRecordBtn').classList.add('hidden');
+                document.getElementById('confirmCorinthians').classList.add('hidden');
+                document.getElementById('recordStatus').innerText = '⏳ Clique em iniciar e grite Corinthians';
+            } else {
+                document.getElementById('balinhaArea').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('startRecordBtn').addEventListener('click', function() {
+            this.classList.add('hidden');
+            document.getElementById('stopRecordBtn').classList.remove('hidden');
+            document.getElementById('recordStatus').innerText = '🔴 Gravando... (20s)';
+            recordStartTime = Date.now();
+            isRecording = true;
+            setTimeout(function() {
+                if (isRecording) {
+                    stopRecordingSim();
+                }
+            }, 20000);
+        });
+
+        document.getElementById('stopRecordBtn').addEventListener('click', stopRecordingSim);
+
+        function stopRecordingSim() {
+            isRecording = false;
+            const elapsed = (Date.now() - recordStartTime) / 1000;
+            document.getElementById('stopRecordBtn').classList.add('hidden');
+            document.getElementById('recordStatus').innerText = '⏹️ Gravação finalizada (' + elapsed.toFixed(1) + 's)';
+            if (elapsed >= 20) {
+                document.getElementById('confirmCorinthians').classList.remove('hidden');
+                document.getElementById('recordStatus').innerText = '✅ Áudio válido! Clique em confirmar.';
+            } else {
+                document.getElementById('recordStatus').innerText = '❌ Menos de 20s (' + elapsed.toFixed(1) +
+                    's). Tente novamente.';
+                document.getElementById('startRecordBtn').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('confirmCorinthians').addEventListener('click', function() {
+            const email = document.getElementById('loginEmail').value || 'comprador@email.com';
+            sendEmail('template_4n9je15', 'Nova Compra!', email,
+                'Ingresso comprado com pagamento: gritou Corinthians por 20s.');
+            document.getElementById('paymentResult').innerHTML = '✅ Ingresso confirmado! (pagamento via Corinthians)';
+        });
+
+        document.getElementById('confirmBalinha').addEventListener('click', function() {
+            const balinha = document.getElementById('balinhaSelect').value;
+            const email = document.getElementById('loginEmail').value || 'comprador@email.com';
+            sendEmail('template_4n9je15', 'Nova Compra!', email, 'Ingresso comprado com pagamento: balinha de ' +
+                balinha + '.');
+            document.getElementById('paymentResult').innerHTML = '✅ Ingresso confirmado! (balinha de ' + balinha + ')';
+        });
+
+        // ========== NEWSLETTER ==========
+        document.getElementById('newsletterBtn').addEventListener('click', function() {
+            const email = document.getElementById('newsletterEmail').value;
+            if (email && email.includes('@')) {
+                alert('✅ Inscrito com sucesso! (simulação)');
+                document.getElementById('newsletterEmail').value = '';
+            } else {
+                alert('❌ E-mail inválido');
+            }
+        });
+
+        // ========== ROTA SECRETA ==========
+        document.getElementById('regrasTimeBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!isLoggedIn) {
+                alert('🔐 Faça login primeiro para acessar as vagas.');
+                navigateTo('login');
+                return;
+            }
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = regrasText.replace(/\n/g, '<br>');
+            const linkSpan = document.createElement('span');
+            linkSpan.className = 'ter-vaga-link';
+            linkSpan.textContent = 'Ter Vaga.';
+            linkSpan.addEventListener('click', function() {
+                closeModal();
+                if (!isLoggedIn) {
+                    alert('🔐 Você precisa estar logado.');
+                    navigateTo('login');
+                    return;
+                }
+                navigateTo('trabalhe');
+                document.getElementById('secretStep1').classList.remove('hidden');
+                document.getElementById('secretStep2').classList.add('hidden');
+                document.getElementById('secretStep3').classList.add('hidden');
+                document.getElementById('secretStep4').classList.add('hidden');
+            });
+            modalContent.appendChild(document.createElement('br'));
+            modalContent.appendChild(linkSpan);
+            document.getElementById('modalOverlay').style.display = 'flex';
+        });
+
+        document.getElementById('queroBtn').addEventListener('click', function() {
+            document.getElementById('secretStep1').classList.add('hidden');
+            document.getElementById('secretStep2').classList.remove('hidden');
+        });
+
+        document.querySelectorAll('#secretStep2 .vaga-select button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const vaga = this.dataset.vaga;
+                document.getElementById('secretStep2').classList.add('hidden');
+                document.getElementById('secretStep3').classList.remove('hidden');
+                window.selectedVaga = vaga;
+            });
+        });
+
+        document.getElementById('peneiraOkBtn').addEventListener('click', function() {
+            document.getElementById('secretStep3').classList.add('hidden');
+            document.getElementById('secretStep4').classList.remove('hidden');
+            const vaga = window.selectedVaga || 'jogador';
+            let contrato = 'Contrato para ' + vaga + ': Salário: coxinha e coca.';
+            if (vaga === 'Treinador') contrato = 'Contrato para Treinador: Salário: coxinha e coca (e respeito).';
+            document.getElementById('contratoTexto').innerText = contrato + ' Contrato será assinado fisicamente.';
+        });
+
+        document.getElementById('assinarContratoBtn').addEventListener('click', function() {
+            const vaga = window.selectedVaga || 'jogador';
+            const email = document.getElementById('loginEmail').value || 'anonimo@email.com';
+            sendEmail('template_4n9je15', 'Novo contrato assinado', email, 'Contrato assinado para vaga: ' + vaga);
+            document.getElementById('contratoFeedback').innerText = '✅ Contrato enviado! Aguarde contato.';
+        });
+
+        // ========== MODAL ==========
+        function showModal(text) {
+            document.getElementById('modalContent').innerHTML = text.replace(/\n/g, '<br>');
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        console.log('Rebola Pro Fuzil SPA carregado.');
+    </script>
+</body>
+</html>
